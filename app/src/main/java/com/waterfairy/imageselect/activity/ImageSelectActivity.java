@@ -100,6 +100,7 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
             options.setMaxNum(intent.getIntExtra(ConstantUtils.MAX_NUM, ConstantUtils.DEFAULT_MAX_NUM));
             options.setSearchDeep(intent.getIntExtra(ConstantUtils.SEARCH_DEEP, ConstantUtils.DEFAULT_DEEP));
             options.setGridNum(intent.getIntExtra(ConstantUtils.GRID_NUM, ConstantUtils.DEFAULT_GRID_NUM_MIN));
+            options.addHasSelectFiles(intent.getStringArrayListExtra(ConstantUtils.HAS_SELECT_FILES));
         }
         compressOptions = (CompressOptions) intent.getSerializableExtra(ConstantUtils.OPTIONS_COMPRESS_BEAN);
     }
