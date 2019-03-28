@@ -1,0 +1,31 @@
+apply plugin: 'com.android.library'
+//apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 26
+//        applicationId "com.waterfairy.imageselect"
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.2'
+    //glide
+    //    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    //photoView 图片view
+    //    implementation 'com.github.chrisbanes:PhotoView:2.1.3'
+}
