@@ -11,9 +11,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -37,9 +36,10 @@ import com.waterfairy.imageselect.options.SelectImgOptions;
 import com.waterfairy.imageselect.presenter.SelectPresenter;
 import com.waterfairy.imageselect.utils.AnimUtils;
 import com.waterfairy.imageselect.utils.ConstantUtils;
+import com.waterfairy.imageselect.utils.DataTransUtils;
 import com.waterfairy.imageselect.utils.PathUtils;
 import com.waterfairy.imageselect.utils.PermissionUtils;
-import com.waterfairy.imageselect.utils.ShareTool;
+import com.waterfairy.imageselect.tool.ImageSelectorShareTool;
 import com.waterfairy.imageselect.view.SelectView;
 
 import java.util.ArrayList;
@@ -130,7 +130,7 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
 
 
     private void initData() {
-        ShareTool.getInstance().initShare(this);
+        ImageSelectorShareTool.getInstance().initShare(this);
         handler.sendEmptyMessageDelayed(0, 300);
     }
 
@@ -177,11 +177,31 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
     public void showImgS(List<SearchImgBean> searchImgBeans) {
         if (imgAdapter == null) {
             imgAdapter = new ShowImgAdapter(this, searchImgBeans, imgWidth, options.getMaxNum());
+            setHasSelectFiles();
             imgAdapter.setOnSelectImgListener(this);
             imgAdapter.setOnImgClickListener(this);
             mGVShowImage.setAdapter(imgAdapter);
         } else {
             imgAdapter.setData(searchImgBeans);
+        }
+    }
+
+    /**
+     * 设置已经选择的图片 外部传入
+     */
+    private void setHasSelectFiles() {
+        ArrayList<String> hasSelectFiles = options.getHasSelectFiles();
+        if (hasSelectFiles != null) {
+            boolean add = false;
+            for (int i = 0; i < hasSelectFiles.size(); i++) {
+                String selectPath = hasSelectFiles.get(i);
+                String transPath = DataTransUtils.getTransPath(selectPath);
+                if (!TextUtils.isEmpty(transPath)) {
+                    imgAdapter.getSelectList().add(transPath);
+                    add = true;
+                }
+            }
+            if (add) setEnsureCanClick(true);
         }
     }
 
@@ -419,6 +439,6 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
         super.onDestroy();
         isDestroy = true;
         dismissDialog();
-        ShareTool.getInstance().onDestroy();
+        ImageSelectorShareTool.getInstance().onDestroy();
     }
 }
