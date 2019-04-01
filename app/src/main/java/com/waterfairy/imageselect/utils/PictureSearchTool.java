@@ -9,6 +9,8 @@ import com.waterfairy.imageselect.bean.SearchImgBean;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -107,7 +109,27 @@ public class PictureSearchTool {
                 searchSpePaths(onSearchListener);
                 //移出排除的文件夹
                 removeSpePaths();
+                //排序
+                sortByTime(fileList);
+                //合并所有的文件
+                mixFiles();
                 return fileList;
+            }
+
+            private void mixFiles() {
+                //加入全部文件
+
+                if (fileList != null && fileList.size() > 0) {
+                    SearchFolderBean searchImgBean = new SearchFolderBean(null, "全部图片");
+
+                    if (fileList != null && fileList.size() > 0) {
+                        SearchFolderBean searchFolderBean = fileList.get(0);
+                        for (int i = 0; i < fileList.size(); i++) {
+                            searchImgBean.addChildImageBeans(PictureSearchTool.getInstance().searchFolder(fileList.get(i).getPath()));
+                        }
+                    }
+                }
+
             }
 
             @Override
@@ -262,7 +284,29 @@ public class PictureSearchTool {
                 }
             }
         }
+
+        sortByTime(imgBeans);
         return imgBeans;
+    }
+
+    /**
+     * 时间排序
+     *
+     * @param imgBeans
+     */
+    public void sortByTime(List<SearchImgBean> imgBeans) {
+
+        Collections.sort(imgBeans, new Comparator<SearchImgBean>() {
+            @Override
+            public int compare(SearchImgBean o1, SearchImgBean o2) {
+
+                if (new File(o1.getPath()).lastModified() < new File(o2.getPath()).lastModified()) {
+                    return 1;// 最后修改的文件在前
+                } else {
+                    return -1;
+                }
+            }
+        });
     }
 
     public interface OnSearchListener {

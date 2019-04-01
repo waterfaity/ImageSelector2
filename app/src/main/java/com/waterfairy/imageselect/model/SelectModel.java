@@ -81,17 +81,6 @@ public class SelectModel implements PictureSearchTool.OnSearchListener {
 
     public void queryImgS(String path) {
         List<SearchImgBean> searchImgBeans = mPictureSearchTool.searchFolder(path);
-        Collections.sort(searchImgBeans, new Comparator<SearchImgBean>() {
-            @Override
-            public int compare(SearchImgBean o1, SearchImgBean o2) {
-
-                if (new File(o1.getPath()).lastModified() < new File(o2.getPath()).lastModified()) {
-                    return 1;// 最后修改的文件在前
-                } else {
-                    return -1;
-                }
-            }
-        });
         mPresenter.onGetImgSuccess(searchImgBeans);
     }
 
