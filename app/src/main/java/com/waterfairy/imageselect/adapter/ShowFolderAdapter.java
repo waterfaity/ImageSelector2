@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.waterfairy.imageselect.R;
 import com.waterfairy.imageselect.bean.SearchFolderBean;
-import com.waterfairy.imageselect.utils.PathUtils;
 
 import java.util.ArrayList;
 
