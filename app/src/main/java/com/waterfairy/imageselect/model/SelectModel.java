@@ -41,7 +41,6 @@ public class SelectModel implements PictureSearchTool.OnSearchListener {
     }
 
     public void queryFolders() {
-        //设置搜索深度  指定文件夹  忽略文件夹
 
         //加载缓存并且缓存有存储
         if (options.isLoadCache()) {
@@ -53,13 +52,6 @@ public class SelectModel implements PictureSearchTool.OnSearchListener {
         }
         //否则 搜索
         mPictureSearchTool.start();
-
-//        ArrayList<SearchFolderBean> folders = mShareTool.getFolders();
-//        if (folders != null && folders.size() > 0 && options.isLoadCache()) {
-//            mPresenter.onGetFoldersSuccess(folders);
-//        } else {
-//            mPictureSearchTool.start();
-//        }
     }
 
     @Override
@@ -79,8 +71,8 @@ public class SelectModel implements PictureSearchTool.OnSearchListener {
     public void onSearchError(String errorMsg) {
     }
 
-    public void queryImgS(String path) {
-        List<SearchImgBean> searchImgBeans = mPictureSearchTool.searchFolder(path);
+    public void queryImgS(SearchFolderBean folderBean) {
+        List<SearchImgBean> searchImgBeans = mPictureSearchTool.searchFolder(folderBean);
         mPresenter.onGetImgSuccess(searchImgBeans);
     }
 

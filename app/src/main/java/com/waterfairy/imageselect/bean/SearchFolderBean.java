@@ -16,6 +16,13 @@ import java.util.List;
  */
 
 public class SearchFolderBean {
+    private boolean isAll;
+
+    public SearchFolderBean(String firstImgPath) {
+        this.firstImgPath = firstImgPath;
+
+    }
+
     public SearchFolderBean(String path, String firstImgPath) {
         this.path = path;
         this.firstImgPath = firstImgPath;
@@ -61,10 +68,6 @@ public class SearchFolderBean {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void addChildImageBeans(List<SearchImgBean> data) {
         if (data != null && data.size() > 0) {
             if (childImgBeans == null) childImgBeans = new ArrayList<>();
@@ -105,4 +108,12 @@ public class SearchFolderBean {
         this.firstImgPath = firstImgPath;
     }
 
+    public void setIsAll(boolean isAll) {
+        this.isAll = isAll;
+        if (isAll) name = "全部图片";
+    }
+
+    public boolean isAll() {
+        return isAll;
+    }
 }

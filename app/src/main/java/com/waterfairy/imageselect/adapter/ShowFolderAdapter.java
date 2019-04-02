@@ -60,7 +60,7 @@ public class ShowFolderAdapter extends BaseAdapter {
         }
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
         SearchFolderBean searchFolderBean = mData.get(position);
-        viewHolder.folderName.setText(PathUtils.getNameFromUrl(searchFolderBean.getPath()));
+        viewHolder.folderName.setText(searchFolderBean.getName());
         Glide.with(mContext).load(searchFolderBean.getFirstImgPath()).centerCrop().into(viewHolder.imageView);
         if (lastPos == position) {
             viewHolder.radioButton.setVisibility(View.VISIBLE);
