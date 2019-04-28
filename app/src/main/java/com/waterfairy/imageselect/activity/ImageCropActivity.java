@@ -30,7 +30,7 @@ public class ImageCropActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_img_crop);
+        setContentView(R.layout.image_selector_activity_img_crop);
         mImg = findViewById(R.id.img);
 
         cropImgOptions = (CropImgOptions) getIntent().getSerializableExtra(ConstantUtils.OPTIONS_BEAN);
@@ -91,5 +91,10 @@ public class ImageCropActivity extends BaseActivity {
         } else {
             finish();
         }
+    }
+
+    @Override
+    protected String getTag() {
+        return cropImgOptions.getTag();
     }
 }

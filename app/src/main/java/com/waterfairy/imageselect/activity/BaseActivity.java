@@ -14,7 +14,7 @@ import com.waterfairy.imageselect.utils.ConstantUtils;
 import java.io.File;
 import java.util.ArrayList;
 
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends RootActivity {
     protected CompressOptions compressOptions;
     private AlertDialog alertDialog;
 
@@ -59,9 +59,13 @@ public class BaseActivity extends AppCompatActivity {
     public void setResult(ArrayList<String> dataList) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(ConstantUtils.RESULT_STRING, dataList);
+
+        intent.putExtra(ConstantUtils.OPTIONS_TAG, getTag());
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
+
+    protected abstract String getTag();
 
     private android.os.Handler handler;
 

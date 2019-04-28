@@ -3,7 +3,10 @@ package com.waterfairy.imageselect;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.waterfairy.imageselect.activity.ImageCropActivity;
 import com.waterfairy.imageselect.activity.ImageCropSelfActivity;
@@ -13,6 +16,7 @@ import com.waterfairy.imageselect.activity.TakePhotoActivity;
 import com.waterfairy.imageselect.options.CompressOptions;
 import com.waterfairy.imageselect.options.CropImgOptions;
 import com.waterfairy.imageselect.options.Options;
+import com.waterfairy.imageselect.options.ShowImgOptions;
 import com.waterfairy.imageselect.tool.ImageSelectorShareTool;
 import com.waterfairy.imageselect.utils.ConstantUtils;
 
@@ -65,7 +69,7 @@ public class ImageSelector {
             return new Intent();
         } else {
             Class aClass = null;
-            switch (options.getType()) {
+            switch (options.getOptionsType()) {
                 case ConstantUtils.TYPE_SELECT:
                     aClass = ImageSelectActivity.class;
                     break;
@@ -84,6 +88,7 @@ public class ImageSelector {
 
             }
             Intent intent = new Intent(activity, aClass);
+            intent.putExtra(ConstantUtils.SCREEN_ORIENTATION, options.getScreenOrientation());
             intent.putExtra(ConstantUtils.OPTIONS_BEAN, options);
             intent.putExtra(ConstantUtils.OPTIONS_COMPRESS_BEAN, compressOptions);
             return intent;

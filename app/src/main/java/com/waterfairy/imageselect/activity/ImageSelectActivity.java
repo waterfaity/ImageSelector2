@@ -5,14 +5,18 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -75,7 +79,7 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_select);
+        setContentView(R.layout.image_selector_activity_image_select);
         mPresenter = new SelectPresenter(this);
         getExtra();
         findView();
@@ -122,7 +126,12 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
         mGVShowImage.setNumColumns(options.getGridNum(this));
         mGVShowImage.setHorizontalSpacing(dividerWidth);
         mGVShowImage.setVerticalSpacing(dividerWidth);
-        imgWidth = (getResources().getDisplayMetrics().widthPixels - (options.getGridNum(this) - 1) * dividerWidth) / options.getGridNum(this);
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int width = Math.min(displayMetrics.widthPixels, displayMetrics.heightPixels);
+        int height = Math.max(displayMetrics.widthPixels, displayMetrics.heightPixels);
+
+        int screenWidth = getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ? width : height;
+        imgWidth = (screenWidth - (options.getGridNum(this) - 1) * dividerWidth) / options.getGridNum(this);
         mLLFolderSelect.setOnClickListener(this);
         mTVPriView.setOnClickListener(this);
         mIVBack.setOnClickListener(this);
@@ -132,14 +141,14 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
 
     private void initData() {
         ImageSelectorShareTool.getInstance().initShare(this);
-        handler.sendEmptyMessageDelayed(0, 300);
+        handler.sendEmptyMessageDelayed(0, 0);
     }
 
 
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            mPresenter.initData(options);
+            mPresenter.initData(ImageSelectActivity.this, options);
             showSearchDialog();
             mPresenter.queryFolders();
         }
@@ -359,6 +368,7 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
     public void onClickImg(View view, String imgPath) {
         Intent intent = new Intent(this, ImageShowActivity.class);
         intent.putExtra(ConstantUtils.STR_PATH, imgPath);
+        intent.putExtra(ConstantUtils.SCREEN_ORIENTATION, getIntent().getIntExtra(ConstantUtils.SCREEN_ORIENTATION, ConstantUtils.ORIENTATION_PORT));
         startActivity(intent);
     }
 
@@ -412,6 +422,11 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
     @Override
     public void dismissDialog() {
         if (mDialog != null) mDialog.dismiss();
+    }
+
+    @Override
+    protected String getTag() {
+        return options.getTag();
     }
 
     @Override

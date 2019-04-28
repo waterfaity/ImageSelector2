@@ -15,17 +15,27 @@ import java.util.ArrayList;
  * @date 2018/12/1
  * @info:
  */
-public class SelectImgOptions implements Options, Serializable {
+public class SelectImgOptions extends AOptions implements Serializable {
 
     private final static long serialVersionUID = 201812012107L;
     private boolean loadCache;//搜索缓存
     private ArrayList<String> searchPaths;//指定搜索路径
     private ArrayList<String> ignorePaths;//忽略路径
+    private boolean containsGif;
     private int maxNum;//选择最大数 默认9
     private int searchDeep;//搜索文件夹深度 默认3
     private int gridNum;//展示grid数量 默认3
     private ArrayList<String> hasSelectFiles;//已经选择的文件
+    private int modelType;
 
+    public boolean isContainsGif() {
+        return containsGif;
+    }
+
+    public SelectImgOptions setContainsGif(boolean containsGif) {
+        this.containsGif = containsGif;
+        return this;
+    }
 
     public SelectImgOptions() {
         maxNum = ConstantUtils.DEFAULT_MAX_NUM;
@@ -33,6 +43,14 @@ public class SelectImgOptions implements Options, Serializable {
         gridNum = ConstantUtils.DEFAULT_GRID_NUM_MIN;
     }
 
+    public SelectImgOptions setModelType(int modelType) {
+        this.modelType = modelType;
+        return this;
+    }
+
+    public int getModelType() {
+        return modelType;
+    }
 
     public boolean isLoadCache() {
         return loadCache;
@@ -150,7 +168,7 @@ public class SelectImgOptions implements Options, Serializable {
     }
 
     @Override
-    public int getType() {
+    public int getOptionsType() {
         return ConstantUtils.TYPE_SELECT;
     }
 
@@ -158,6 +176,13 @@ public class SelectImgOptions implements Options, Serializable {
     public int getRequestCode() {
         return ConstantUtils.REQUEST_SELECT;
     }
+
+    @Override
+    public SelectImgOptions setTag(String tag) {
+        super.tag = tag;
+        return this;
+    }
+
 
     /**
      * 添加已经选择的文件s
@@ -191,4 +216,10 @@ public class SelectImgOptions implements Options, Serializable {
         }
         return this;
     }
+    @Override
+    public SelectImgOptions setScreenOrientation(int screenOrientation) {
+        super.screenOrientation = screenOrientation;
+        return this;
+    }
+
 }

@@ -22,6 +22,7 @@ import com.waterfairy.imageselect.options.SelectImgOptions;
 import com.waterfairy.imageselect.options.ShowImgOptions;
 import com.waterfairy.imageselect.options.TakePhotoOptions;
 import com.waterfairy.imageselect.utils.ConstantUtils;
+import com.waterfairy.imageselect.utils.PictureSearchTool2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +33,13 @@ public class TestActivity extends AppCompatActivity implements AdapterView.OnIte
     private GridView gridView;
     private View currentView;
     String pathName;
+    boolean hasTransAnim;
     private ArrayList<String> resultDatas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_image_select_test);
+        setContentView(R.layout.image_selector_activity_image_select_test);
 
         findViewById(R.id.zoom_img).setOnClickListener(this);
         findViewById(R.id.zoom_img).setOnLongClickListener(this);
@@ -48,10 +49,10 @@ public class TestActivity extends AppCompatActivity implements AdapterView.OnIte
         findViewById(R.id.crop).setOnClickListener(this);
         findViewById(R.id.show).setOnClickListener(this);
         findViewById(R.id.crop2).setOnClickListener(this);
+        findViewById(R.id.query).setOnClickListener(this);
 
-        pathName = getIntent().getStringExtra("authority");
-        if (TextUtils.isEmpty(pathName))
-            pathName = getIntent().getStringExtra("pathName");
+        pathName = getIntent().getStringExtra("pathName");
+        hasTransAnim = getIntent().getBooleanExtra("hasTransAnim", true);
         gridView = findViewById(R.id.grid_view);
         gridView.setNumColumns(3);
         gridView.setOnItemClickListener(this);
@@ -96,7 +97,7 @@ public class TestActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ArrayList<String> dataList = ((MyAdapter) gridView.getAdapter()).getDataList();
-        ImageSelector.with(this).options(new ShowImgOptions().setClickToDismiss(true).setCurrentPos(position).addImgList(dataList)).execute();
+//        ImageSelector.with(this).options(new ShowImgOptions().setClickToDismiss(true).setHasTranslateAnim(hasTransAnim).setCurrentPos(position).addImgList(dataList)).showImg(view, dataList.get(position));
 //        ImageSelector.with(this).options(new CropImgOptions().setImgPath(dataList.get(0))).execute();
     }
 
@@ -104,8 +105,8 @@ public class TestActivity extends AppCompatActivity implements AdapterView.OnIte
         ArrayList<String> ignore = new ArrayList<>();
         ignore.add(ConstantUtils.PATH_WX);
         ImageSelector.with(this)
-                .options(new SelectImgOptions().setGridNum(4).setMaxNum(9).setSearchDeep(3).setLoadCache(false).addSearchPaths(ignore))
-//                .compress(getCompressOptions())
+                .options(new SelectImgOptions().setScreenOrientation(ConstantUtils.ORIENTATION_LAND).setGridNum(4).setMaxNum(9).setSearchDeep(4).setLoadCache(false).addSearchPaths(ignore).setTag("true"))
+                .compress(getCompressOptions())
                 .execute();
     }
 
@@ -123,29 +124,33 @@ public class TestActivity extends AppCompatActivity implements AdapterView.OnIte
             selectImg(v);
         } else if (v.getId() == R.id.take_photo) {
             ImageSelector.with(this)
-                    .options(new TakePhotoOptions().setPathAuthority(pathName))
+                    .options(new TakePhotoOptions().setPathAuthority(pathName).setScreenOrientation(ConstantUtils.ORIENTATION_LAND))
                     .compress(getCompressOptions())
                     .execute();
         } else if (v.getId() == R.id.crop) {
             if (TextUtils.isEmpty(url)) {
                 return;
             }
-            ImageSelector.with(this).options(new CropImgOptions().setCropPath("/sdcard/test/img").setAspectX(1).setAspectY(2).setImgPath(url).setPathAuthority(pathName)).execute();
+            ImageSelector.with(this).options(new CropImgOptions().setCropPath("/sdcard/test/img").setImgPath(url).setPathAuthority(pathName)).execute();
         } else if (v.getId() == R.id.crop2) {
             if (TextUtils.isEmpty(url)) {
                 return;
             }
-            ImageSelector.with(this).options(new CropImgOptions().setAspectX(1).setAspectY(2).setCropPath("/sdcard/test/img").setImgPath(url).setPathAuthority(pathName).setCropType(CropImgOptions.CROP_TYPE_SElf)).compress(getCompressOptions()).execute();
+            ImageSelector.with(this).options(new CropImgOptions().setScreenOrientation(ConstantUtils.ORIENTATION_LAND).setAspectX(1).setAspectY(2).setCropPath("/sdcard/test/img").setImgPath(url).setPathAuthority(pathName).setCropType(CropImgOptions.CROP_TYPE_SElf)).compress(getCompressOptions()).execute();
         } else if (v.getId() == R.id.show) {
             if (resultDatas == null) return;
 //            ImageSelector.with(this).options(new ShowImgOptions().addImgList(resultDatas)).execute();
-            ImageSelector.with(this).options(new ShowImgOptions().setClickToDismiss(true).setCurrentPos(0).addImgList(resultDatas)).execute();
+//            ImageSelector.with(this).options(new ShowImgOptions().setClickToDismiss(true).setCurrentPos(0).addImgList(resultDatas).setHasTranslateAnim(hasTransAnim)).showImg(findViewById(R.id.zoom_img), resultDatas.get(0));
 
         } else if (v.getId() == R.id.zoom_img) {
             Log.i(TAG, "onClick: zoom_img");
         } else if (v.getId() == R.id.show_one) {
             if (resultDatas == null) return;
-            ImageSelector.with(this).options(new ShowImgOptions().addImgList(resultDatas)).execute();
+//            ImageSelector.with(this).options(new ShowImgOptions().addImgList(resultDatas).setHasTranslateAnim(hasTransAnim)).showImg(findViewById(R.id.zoom_img), resultDatas.get(0));
+        } else if (v.getId() == R.id.query) {
+            ArrayList<String> ignoreList = new ArrayList<>();
+//            ignoreList.add(new File("/storage/emulated/0/DCIM/Camera").getAbsolutePath());
+            PictureSearchTool2.newInstance(this).setPaths(ignoreList).start();
         }
 
     }

@@ -3,7 +3,7 @@ package com.waterfairy.imageselect.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,7 +18,7 @@ import com.waterfairy.imageselect.utils.PathUtils;
 import java.io.File;
 
 
-public class ImageShowActivity extends AppCompatActivity {
+public class ImageShowActivity extends RootActivity {
     private boolean isVisibility = true;
     private ImageView photoView;
 
@@ -41,9 +41,15 @@ public class ImageShowActivity extends AppCompatActivity {
         TextView tVTitle = findViewById(R.id.title);
         if (!TextUtils.isEmpty(url)) {
             tVTitle.setText(TextUtils.isEmpty(title) ? PathUtils.getNameFromUrl(url) : title);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                photoView.setTransitionName(url);
+            }
             Glide.with(this).load(url).into(photoView);
         } else if (!TextUtils.isEmpty(path)) {
             tVTitle.setText(TextUtils.isEmpty(title) ? new File(path).getName() : title);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                photoView.setTransitionName(path);
+            }
             Glide.with(this).load(new File(path)).into(photoView);
         }
         final View topView = findViewById(R.id.rel_top);
@@ -62,6 +68,6 @@ public class ImageShowActivity extends AppCompatActivity {
 
     public void back(View view) {
         if (isVisibility)
-            finish();
+            ActivityCompat.finishAfterTransition(this);
     }
 }

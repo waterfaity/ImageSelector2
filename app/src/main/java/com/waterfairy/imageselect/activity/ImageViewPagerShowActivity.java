@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -26,7 +28,11 @@ import com.waterfairy.imageselect.utils.MD5Utils;
 
 import java.io.File;
 
-public class ImageViewPagerShowActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener, ViewPageShowAdapter.OnViewClickListener {
+//import com.github.chrisbanes.photoview.OnPhotoTapListener;
+//import com.github.chrisbanes.photoview.PhotoView;
+
+
+public class ImageViewPagerShowActivity extends RootActivity implements View.OnClickListener, ViewPager.OnPageChangeListener, ViewPageShowAdapter.OnViewClickListener {
     private ViewPager mVPShowImg;
     private TextView mTVTitle;
     private int mCurrentPos;
@@ -57,7 +63,13 @@ public class ImageViewPagerShowActivity extends AppCompatActivity implements Vie
     }
 
     private void setViewPager() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mVPShowImg.setTransitionName(options.getImgList().get(mCurrentPos));
+        }
         mVPShowImg.setAdapter(new ViewPageShowAdapter(this, options.getImgList())
+                .setCurrentPos(mCurrentPos)
+                .setHasTranslateAnim(options.isHasTranslateAnim())
+                .setReferToView(findViewById(R.id.root_view))
                 .setResImgDefault(options.getImgResDefault())
                 .setOnClickListener(this)
         );
@@ -69,6 +81,10 @@ public class ImageViewPagerShowActivity extends AppCompatActivity implements Vie
 
 
     private void initView() {
+        if (options.isHasTranslateAnim())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                postponeEnterTransition();
+            }
         mRLSave.setVisibility(View.GONE);
         mVPShowImg.setOffscreenPageLimit(3);
         mVPShowImg.addOnPageChangeListener(this);
@@ -110,8 +126,11 @@ public class ImageViewPagerShowActivity extends AppCompatActivity implements Vie
         Intent intent = new Intent();
         intent.putExtra(ConstantUtils.CURRENT_POS, mCurrentPos);
         intent.putExtra(ConstantUtils.IMG_PATH, options.getImgList().get(mCurrentPos));
+        intent.putExtra(ConstantUtils.OPTIONS_TAG, options.getTag());
         setResult(RESULT_OK, intent);
-        finish();
+        if (options.isHasTranslateAnim())
+            ActivityCompat.finishAfterTransition(this);
+        else finish();
     }
 
     public void back(View view) {
@@ -249,4 +268,5 @@ public class ImageViewPagerShowActivity extends AppCompatActivity implements Vie
         }
         isVisibility = !isVisibility;
     }
+
 }

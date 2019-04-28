@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @date 2018/12/1
  * @info:
  */
-public class ShowImgOptions implements Options {
+public class ShowImgOptions extends AOptions {
 
     private ArrayList<String> imgList;
     private int imgResDefault;
@@ -21,6 +21,16 @@ public class ShowImgOptions implements Options {
     private boolean canSaveImg;
     private String saveParentPath;
     private boolean clickToDismiss;
+    private boolean hasTranslateAnim = true;
+
+    public boolean isHasTranslateAnim() {
+        return hasTranslateAnim;
+    }
+
+    public ShowImgOptions setHasTranslateAnim(boolean hasTranslateAnim) {
+        this.hasTranslateAnim = hasTranslateAnim;
+        return this;
+    }
 
     public ArrayList<String> getImgList() {
         return imgList;
@@ -89,7 +99,14 @@ public class ShowImgOptions implements Options {
     }
 
     @Override
-    public int getType() {
+    public ShowImgOptions setTag(String tag) {
+        super.tag = tag;
+        return this;
+    }
+
+
+    @Override
+    public int getOptionsType() {
         return ConstantUtils.TYPE_SHOW;
     }
 
@@ -97,4 +114,10 @@ public class ShowImgOptions implements Options {
     public int getRequestCode() {
         return ConstantUtils.REQUEST_SHOW;
     }
+    @Override
+    public ShowImgOptions setScreenOrientation(int screenOrientation) {
+        super.screenOrientation = screenOrientation;
+        return this;
+    }
+
 }

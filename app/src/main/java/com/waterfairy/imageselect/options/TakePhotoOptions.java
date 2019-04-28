@@ -8,7 +8,7 @@ import com.waterfairy.imageselect.utils.ConstantUtils;
  * @date 2018/12/1
  * @info:
  */
-public class TakePhotoOptions implements Options {
+public class TakePhotoOptions extends AOptions {
     private String pathAuthority;
 
     public String getPathAuthority() {
@@ -21,7 +21,20 @@ public class TakePhotoOptions implements Options {
     }
 
     @Override
-    public int getType() {
+    public TakePhotoOptions setTag(String tag) {
+        super.tag = tag;
+        return this;
+    }
+
+    @Override
+    public TakePhotoOptions setScreenOrientation(int screenOrientation) {
+        super.screenOrientation = screenOrientation;
+        return this;
+    }
+
+
+    @Override
+    public int getOptionsType() {
         return ConstantUtils.TYPE_TAKE_PHOTO;
     }
 
