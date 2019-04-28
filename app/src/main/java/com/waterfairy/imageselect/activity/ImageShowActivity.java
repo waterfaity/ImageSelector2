@@ -26,7 +26,9 @@ public class ImageShowActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_selector_activity_image_show);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            postponeEnterTransition();
+        }
         photoView = findViewById(R.id.image);
         Intent intent = getIntent();
         //url
@@ -39,17 +41,10 @@ public class ImageShowActivity extends AppCompatActivity {
         TextView tVTitle = findViewById(R.id.title);
         if (!TextUtils.isEmpty(url)) {
             tVTitle.setText(TextUtils.isEmpty(title) ? PathUtils.getNameFromUrl(url) : title);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                photoView.setTransitionName(url);
-            }
             Glide.with(this).load(url).into(photoView);
         } else if (!TextUtils.isEmpty(path)) {
             tVTitle.setText(TextUtils.isEmpty(title) ? new File(path).getName() : title);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                photoView.setTransitionName(path);
-            }
-            Glide.with(this).load(new File(path))
-                    .into(photoView);
+            Glide.with(this).load(new File(path)).into(photoView);
         }
         final View topView = findViewById(R.id.rel_top);
         photoView.setOnClickListener(new View.OnClickListener() {
@@ -65,10 +60,8 @@ public class ImageShowActivity extends AppCompatActivity {
         });
     }
 
-
     public void back(View view) {
-        if (isVisibility) {
+        if (isVisibility)
             finish();
-        }
     }
 }

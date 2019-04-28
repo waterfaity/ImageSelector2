@@ -3,16 +3,15 @@ package com.waterfairy.imageselect;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.view.View;
 
 import com.waterfairy.imageselect.activity.ImageCropActivity;
+import com.waterfairy.imageselect.activity.ImageCropSelfActivity;
 import com.waterfairy.imageselect.activity.ImageSelectActivity;
 import com.waterfairy.imageselect.activity.ImageViewPagerShowActivity;
 import com.waterfairy.imageselect.activity.TakePhotoActivity;
 import com.waterfairy.imageselect.options.CompressOptions;
+import com.waterfairy.imageselect.options.CropImgOptions;
 import com.waterfairy.imageselect.options.Options;
 import com.waterfairy.imageselect.tool.ImageSelectorShareTool;
 import com.waterfairy.imageselect.utils.ConstantUtils;
@@ -77,7 +76,10 @@ public class ImageSelector {
                     aClass = TakePhotoActivity.class;
                     break;
                 case ConstantUtils.TYPE_CROP:
-                    aClass = ImageCropActivity.class;
+                    if (options instanceof CropImgOptions && (((CropImgOptions) options).getCropType() == CropImgOptions.CROP_TYPE_SElf))
+                        aClass = ImageCropSelfActivity.class;
+                    else
+                        aClass = ImageCropActivity.class;
                     break;
 
             }
@@ -87,37 +89,6 @@ public class ImageSelector {
             return intent;
         }
     }
-
-    /**
-     * 展示图片
-     *
-     * @param view
-     * @param transitionName
-     * @param requestCode
-     */
-    public void showImg(View view, String transitionName, int requestCode) {
-        if (activity != null) {
-            ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, view, transitionName);
-            ActivityCompat.startActivityForResult(activity, intent(), requestCode, activityOptionsCompat.toBundle());
-        } else {
-            new Exception("showImg error. activity 为null").printStackTrace();
-        }
-    }
-
-    /**
-     * 展示图片
-     *
-     * @param view
-     * @param transitionName
-     */
-    public void showImg(View view, String transitionName) {
-        if (options == null) {
-            new Exception("请添加options").printStackTrace();
-        } else {
-            showImg(view, transitionName, options.getRequestCode());
-        }
-    }
-
 
     public ImageSelector compress(CompressOptions compressOptions) {
         this.compressOptions = compressOptions;

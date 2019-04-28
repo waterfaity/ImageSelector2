@@ -38,6 +38,7 @@ public class SelectModel implements PictureSearchTool.OnSearchListener {
     }
 
     public void queryFolders() {
+        //设置搜索深度  指定文件夹  忽略文件夹
 
         //加载缓存并且缓存有存储
         if (options.isLoadCache()) {

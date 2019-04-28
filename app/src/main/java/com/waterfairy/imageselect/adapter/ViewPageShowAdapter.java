@@ -23,22 +23,10 @@ public class ViewPageShowAdapter extends PagerAdapter {
     private ArrayList<String> dataList;
 
     private int mResImgDefault;
-    private int mCurrentPos;
-    private View mReferToView;
     private OnViewClickListener onClickListener;
-
-    public ViewPageShowAdapter setReferToView(View view) {
-        mReferToView = view;
-        return this;
-    }
 
     public ViewPageShowAdapter setResImgDefault(int resImgDefault) {
         this.mResImgDefault = resImgDefault;
-        return this;
-    }
-
-    public ViewPageShowAdapter setCurrentPos(int currentPos) {
-        this.mCurrentPos = currentPos;
         return this;
     }
 
@@ -61,10 +49,8 @@ public class ViewPageShowAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         final View view = LayoutInflater.from(activity).inflate(R.layout.image_selector_img, container, false);
         container.addView(view);
-        ImageView imageView = (ImageView) view.findViewById(R.id.img);
-        showView(imageView, position);
-
-        Glide.with(activity).load(dataList.get(position)).error(mResImgDefault).placeholder(mResImgDefault).into(imageView);
+        ImageView imageView = view.findViewById(R.id.img);
+        Glide.with(activity).load(dataList.get(position)).placeholder(mResImgDefault).error(mResImgDefault).into(imageView);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,7 +63,6 @@ public class ViewPageShowAdapter extends PagerAdapter {
                 if (onClickListener != null) onClickListener.onViewClick();
             }
         });
-        imageView.setTag(R.id.key_glide, dataList.get(position));
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -87,27 +72,10 @@ public class ViewPageShowAdapter extends PagerAdapter {
                 return false;
             }
         });
+        imageView.setTag(R.id.key_glide, dataList.get(position));
         return view;
     }
 
-    /**
-     * 展示单个imageView
-     *
-     * @param imageView
-     * @param position
-     */
-    private void showView(ImageView imageView, int position) {
-//        RequestBuilder<Drawable> load = Glide.with(activity).load(dataList.get(position));
-//        if (mResImgDefault != 0) {
-//            load = load.apply(new RequestOptions().placeholder(mResImgDefault).error(mResImgDefault));
-//        }
-//        if (mCurrentPos == position) {
-//            load = load.listener(new GlideRequestListener(activity, mReferToView, imageView, true).setOne(true));
-//        } else {
-//            load = load.listener(new GlideRequestListener(activity, mReferToView, imageView, false).setOne(true));
-//        }
-//        load.into(imageView);
-    }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {

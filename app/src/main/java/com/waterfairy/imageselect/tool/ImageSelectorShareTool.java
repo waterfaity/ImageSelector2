@@ -96,7 +96,6 @@ public class ImageSelectorShareTool {
      * @param srcPath
      */
     public void saveSrcPath(String compressPath, String srcPath) {
-
         if (share != null) {
             share.edit().putString(compressPath, srcPath).apply();
         } else {

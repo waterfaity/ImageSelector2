@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.widget.ImageView;
@@ -14,13 +13,15 @@ import com.waterfairy.imageselect.R;
 import com.waterfairy.imageselect.options.CompressOptions;
 import com.waterfairy.imageselect.options.CropImgOptions;
 import com.waterfairy.imageselect.utils.ConstantUtils;
+import com.waterfairy.imageselect.utils.FileUtils;
 import com.waterfairy.imageselect.utils.ProviderUtils;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
+/**
+ * 系统 / 第三方 处理
+ */
 public class ImageCropActivity extends BaseActivity {
     private CropImgOptions cropImgOptions;
     private File saveFile;
@@ -65,17 +66,7 @@ public class ImageCropActivity extends BaseActivity {
             extension = "png";
         }
         //设置输出路径
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String format = simpleDateFormat.format(new Date());
-        if (!TextUtils.isEmpty(cropImgOptions.getCropPath())) {
-            saveFile = new File(cropImgOptions.getCropPath());
-        } else {
-            saveFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "cropPictures");
-        }
-        if (!saveFile.exists()) {
-            saveFile.mkdirs();
-        }
-        saveFile = new File(saveFile, "IMG_" + format + "." + extension);
+        saveFile = FileUtils.getCropSavePath(cropImgOptions.getCropPath(), extension);
         // 把文件地址转换成Uri格式
         intent.putExtra("return-data", false);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(saveFile));

@@ -69,4 +69,6 @@ public class CompressOptions implements Serializable {
         this.compressPath = compressPath;
         return this;
     }
+
+
 }

@@ -57,6 +57,7 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
     private ListView mLVShowFolder;//文件夹展示
     private LinearLayout mLLFolder;//文件夹展示框  动画移动
     private LinearLayout mLLFolderSelect;//文件夹选择按钮
+    private ArrayList<String> mHasSelectPath;
     private TextView mTVPath;//文件夹选择按钮中的文件夹名展示
     private TextView mTVPriView;//图片预览
     private Button mBTEnsure;
@@ -437,8 +438,8 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ImageSelectorShareTool.getInstance().onDestroy();
         isDestroy = true;
         dismissDialog();
+        ImageSelectorShareTool.getInstance().onDestroy();
     }
 }
