@@ -39,7 +39,7 @@ public class ConstantUtils {
     public static final int REQUEST_CROP = 18124;//裁剪
 
     //DEFAULT_SELECT_IMG_TYPE
-    public static final int SELECT_IMG_MODULE_TYPE_CURSOR = 1;
+    public static final int SELECT_IMG_MODULE_TYPE_CURSOR = 1;//调用内容提供者获取图片
 
     public static final int TYPE_SELECT = 1;
     public static final int TYPE_SHOW = 2;
