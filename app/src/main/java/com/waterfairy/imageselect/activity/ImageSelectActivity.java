@@ -183,6 +183,11 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
             mTVDialog.setText(path);
     }
 
+    /**
+     * 展示图片
+     *
+     * @param searchImgBeans
+     */
     @Override
     public void showImgS(List<SearchImgBean> searchImgBeans) {
         if (imgAdapter == null) {
@@ -369,7 +374,8 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
         Intent intent = new Intent(this, ImageShowActivity.class);
         intent.putExtra(ConstantUtils.STR_PATH, imgPath);
         intent.putExtra(ConstantUtils.SCREEN_ORIENTATION, getIntent().getIntExtra(ConstantUtils.SCREEN_ORIENTATION, ConstantUtils.ORIENTATION_PORT));
-        startActivity(intent);
+        Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, imgPath).toBundle();
+        ActivityCompat.startActivity(this, intent, bundle);
     }
 
     @Override
@@ -453,6 +459,9 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
     @Override
     public void onDestroy() {
         super.onDestroy();
+        handler.removeMessages(0);
+        handler = null;
+        mPresenter.onDestroy();
         isDestroy = true;
         dismissDialog();
         ImageSelectorShareTool.getInstance().onDestroy();

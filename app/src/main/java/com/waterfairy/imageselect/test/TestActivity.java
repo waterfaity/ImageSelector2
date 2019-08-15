@@ -21,9 +21,12 @@ import com.waterfairy.imageselect.options.CropImgOptions;
 import com.waterfairy.imageselect.options.SelectImgOptions;
 import com.waterfairy.imageselect.options.ShowImgOptions;
 import com.waterfairy.imageselect.options.TakePhotoOptions;
+import com.waterfairy.imageselect.tool.BinaryTool;
 import com.waterfairy.imageselect.utils.ConstantUtils;
 import com.waterfairy.imageselect.utils.PictureSearchTool2;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +53,7 @@ public class TestActivity extends AppCompatActivity implements AdapterView.OnIte
         findViewById(R.id.show).setOnClickListener(this);
         findViewById(R.id.crop2).setOnClickListener(this);
         findViewById(R.id.query).setOnClickListener(this);
+        findViewById(R.id.toBinary).setOnClickListener(this);
 
         pathName = getIntent().getStringExtra("pathName");
         hasTransAnim = getIntent().getBooleanExtra("hasTransAnim", true);
@@ -97,15 +101,17 @@ public class TestActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ArrayList<String> dataList = ((MyAdapter) gridView.getAdapter()).getDataList();
-//        ImageSelector.with(this).options(new ShowImgOptions().setClickToDismiss(true).setHasTranslateAnim(hasTransAnim).setCurrentPos(position).addImgList(dataList)).showImg(view, dataList.get(position));
+        ImageSelector.with(this).options(new ShowImgOptions().setClickToDismiss(true).setHasTranslateAnim(hasTransAnim).setCurrentPos(position).addImgList(dataList)).showImg(view, dataList.get(position));
 //        ImageSelector.with(this).options(new CropImgOptions().setImgPath(dataList.get(0))).execute();
     }
 
     public void selectImg(View view) {
         ArrayList<String> ignore = new ArrayList<>();
         ignore.add(ConstantUtils.PATH_WX);
+        ignore.add(ConstantUtils.PATH_QQ_RECV);
+        ignore.add(ConstantUtils.PATH_QQ_IMAGES);
         ImageSelector.with(this)
-                .options(new SelectImgOptions().setScreenOrientation(ConstantUtils.ORIENTATION_LAND).setGridNum(4).setMaxNum(9).setSearchDeep(4).setLoadCache(false).addSearchPaths(ignore).setTag("true"))
+                .options(new SelectImgOptions().setContainsGif(false).setModelType(ConstantUtils.SELECT_IMG_MODULE_TYPE_CURSOR).setGridNum(3).setMaxNum(9).setSearchDeep(4).setLoadCache(false).addSearchPaths(ignore).setTag("true"))
                 .compress(getCompressOptions())
                 .execute();
     }
@@ -124,7 +130,7 @@ public class TestActivity extends AppCompatActivity implements AdapterView.OnIte
             selectImg(v);
         } else if (v.getId() == R.id.take_photo) {
             ImageSelector.with(this)
-                    .options(new TakePhotoOptions().setPathAuthority(pathName).setScreenOrientation(ConstantUtils.ORIENTATION_LAND))
+                    .options(new TakePhotoOptions().setPathAuthority(pathName))
                     .compress(getCompressOptions())
                     .execute();
         } else if (v.getId() == R.id.crop) {
@@ -136,23 +142,55 @@ public class TestActivity extends AppCompatActivity implements AdapterView.OnIte
             if (TextUtils.isEmpty(url)) {
                 return;
             }
-            ImageSelector.with(this).options(new CropImgOptions().setScreenOrientation(ConstantUtils.ORIENTATION_LAND).setAspectX(1).setAspectY(2).setCropPath("/sdcard/test/img").setImgPath(url).setPathAuthority(pathName).setCropType(CropImgOptions.CROP_TYPE_SElf)).compress(getCompressOptions()).execute();
+            ImageSelector.with(this).options(new CropImgOptions().setAspectX(1).setAspectY(2).setCropPath("/sdcard/test/img").setImgPath(url).setPathAuthority(pathName).setCropType(CropImgOptions.CROP_TYPE_SElf)).compress(getCompressOptions()).execute();
         } else if (v.getId() == R.id.show) {
             if (resultDatas == null) return;
 //            ImageSelector.with(this).options(new ShowImgOptions().addImgList(resultDatas)).execute();
-//            ImageSelector.with(this).options(new ShowImgOptions().setClickToDismiss(true).setCurrentPos(0).addImgList(resultDatas).setHasTranslateAnim(hasTransAnim)).showImg(findViewById(R.id.zoom_img), resultDatas.get(0));
-
+            ImageSelector.with(this).options(new ShowImgOptions().setClickToDismiss(true).setCurrentPos(0).addImgList(resultDatas).setHasTranslateAnim(hasTransAnim)).showImg(findViewById(R.id.zoom_img), resultDatas.get(0));
         } else if (v.getId() == R.id.zoom_img) {
             Log.i(TAG, "onClick: zoom_img");
         } else if (v.getId() == R.id.show_one) {
             if (resultDatas == null) return;
-//            ImageSelector.with(this).options(new ShowImgOptions().addImgList(resultDatas).setHasTranslateAnim(hasTransAnim)).showImg(findViewById(R.id.zoom_img), resultDatas.get(0));
+            ImageSelector.with(this).options(new ShowImgOptions().addImgList(resultDatas).setHasTranslateAnim(hasTransAnim)).showImg(findViewById(R.id.zoom_img), resultDatas.get(0));
         } else if (v.getId() == R.id.query) {
             ArrayList<String> ignoreList = new ArrayList<>();
 //            ignoreList.add(new File("/storage/emulated/0/DCIM/Camera").getAbsolutePath());
             PictureSearchTool2.newInstance(this).setPaths(ignoreList).start();
-        }
+        } else if (v.getId() == R.id.toBinary) {
+            BinaryTool binaryTool = new BinaryTool();
+            if (resultDatas != null && resultDatas.size() > 0) {
 
+                try {
+                    List[] binaryList = binaryTool.getBinaryList(new File(resultDatas.get(0)));
+                    String aa = "";
+                    String bb = "";
+                    String cc = "";
+
+                    List<Byte> byteList = binaryList[0];
+                    List<String> hexList = binaryList[1];
+
+
+                    for (int i = 0; i < 20; i++) {
+
+
+                        byte hight = byteList.get(i);
+                        String s = new Byte(hight).toString();
+                        Character aChar = (char) hight;
+                        Integer aInt = (int) hight;
+
+                        aa += s + " ";
+                        bb += aChar + " ";
+                        cc += hexList.get(i).toUpperCase() + " ";
+
+                    }
+                    Log.i(TAG, "onClick: aa:" + aa);
+                    Log.i(TAG, "onClick: bb:" + bb);
+                    Log.i(TAG, "onClick: cc:" + cc);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override

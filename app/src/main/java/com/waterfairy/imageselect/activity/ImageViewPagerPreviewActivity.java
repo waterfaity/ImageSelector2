@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +75,7 @@ public class ImageViewPagerPreviewActivity extends RootActivity implements View.
 
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
-                ImageView photoView = photoViews.get(position);
+                ZoomImageView photoView = (ZoomImageView) photoViews.get(position);
                 container.addView(photoView);
                 photoView.setOnClickListener(ImageViewPagerPreviewActivity.this);
                 return photoView;
@@ -98,7 +97,8 @@ public class ImageViewPagerPreviewActivity extends RootActivity implements View.
         mBTEnsure.setOnClickListener(this);
         photoViews = new ArrayList<>();
         for (int i = 0; i < dataList.size(); i++) {
-            ImageView photoView = new ZoomImageView(this);
+            ZoomImageView photoView = new ZoomImageView(this);
+            photoView.setCanZoom(true);
             Glide.with(this).load(dataList.get(i)).into(photoView);
             photoViews.add(photoView);
         }

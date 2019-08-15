@@ -156,12 +156,16 @@ public class CompressTool {
      */
     private String compress(String sourcePath, String targetPath) {
         //压缩 返回 bitmap / IO流
-        Object object = ImageUtils.compress(new File(sourcePath), compressOptions);
+        Object object = ImageUtils.compress(new File(sourcePath), compressOptions.getMaxWidth(),compressOptions.getMaxHeight(),compressOptions.getMaxSize());
         //保存图片文件
         boolean success = false;
         if (object instanceof Bitmap) {
             Bitmap bitmap = (Bitmap) object;
             success = ImageUtils.saveBitmap(targetPath, bitmap, targetPath.endsWith(".png") ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 85);
+            if (!bitmap.isRecycled()) {
+                bitmap.recycle();
+                bitmap = null;
+            }
         } else if (object instanceof ByteArrayInputStream) {
             ByteArrayInputStream byteArrayInputStream = (ByteArrayInputStream) object;
             success = ImageUtils.saveBitmap(targetPath, byteArrayInputStream);

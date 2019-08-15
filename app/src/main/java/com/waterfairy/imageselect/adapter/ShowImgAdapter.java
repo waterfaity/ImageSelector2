@@ -73,9 +73,7 @@ public class ShowImgAdapter extends BaseAdapter implements View.OnClickListener 
         Glide.with(mContext).load(searchImgBean.getPath()).into(viewHolder.imageView);
         viewHolder.rootView.setTag(searchImgBean.getPath());
         viewHolder.rootView.setOnClickListener(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            viewHolder.rootView.setTransitionName(searchImgBean.getPath());
-        }
+
         viewHolder.checkBox.setOnCheckedChangeListener(null);
         viewHolder.checkBox.setChecked(selectList.contains(searchImgBean.getPath()));
         viewHolder.checkBox.setTag(searchImgBean);

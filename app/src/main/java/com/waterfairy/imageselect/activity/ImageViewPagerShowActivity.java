@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -63,9 +62,7 @@ public class ImageViewPagerShowActivity extends RootActivity implements View.OnC
     }
 
     private void setViewPager() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mVPShowImg.setTransitionName(options.getImgList().get(mCurrentPos));
-        }
+
         mVPShowImg.setAdapter(new ViewPageShowAdapter(this, options.getImgList())
                 .setCurrentPos(mCurrentPos)
                 .setHasTranslateAnim(options.isHasTranslateAnim())
@@ -81,10 +78,6 @@ public class ImageViewPagerShowActivity extends RootActivity implements View.OnC
 
 
     private void initView() {
-        if (options.isHasTranslateAnim())
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                postponeEnterTransition();
-            }
         mRLSave.setVisibility(View.GONE);
         mVPShowImg.setOffscreenPageLimit(3);
         mVPShowImg.addOnPageChangeListener(this);

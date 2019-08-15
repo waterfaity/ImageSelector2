@@ -19,7 +19,6 @@ public abstract class AOptions implements Options {
     }
 
 
-
     @Override
     public String getTag() {
         return tag;

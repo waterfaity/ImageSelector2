@@ -24,7 +24,6 @@ import java.util.List;
 
 
 public class PictureSearchTool {
-    private static final String TAG = "pictureSearchTool";
     private ArrayList<SearchFolderBean> fileList = new ArrayList<>();
     //    private String extension[] = new String[]{".png", ".jpg", ".jpeg", ".PNG", ".JPEG", ".JPG"};
     private String extension[] = new String[]{".jpg", ".png"};
@@ -32,7 +31,6 @@ public class PictureSearchTool {
     private int deep = 3;
     private ArrayList<String> mSearchPaths;
     private ArrayList<String> mIgnorePaths;
-    private static final PictureSearchTool PICTURE_SEARCH_TOOL = new PictureSearchTool();
     private OnSearchListener onSearchListener;
     private boolean containsGif;
 
@@ -41,8 +39,8 @@ public class PictureSearchTool {
 
     }
 
-    public static PictureSearchTool getInstance() {
-        return PICTURE_SEARCH_TOOL;
+    public static PictureSearchTool newInstance() {
+        return new PictureSearchTool();
     }
 
     //设置搜索深度
@@ -129,7 +127,7 @@ public class PictureSearchTool {
                     searchImgBean.setIsAll(true);
                     for (int i = 0; i < fileList.size(); i++) {
                         SearchFolderBean searchFolderBean = fileList.get(i);
-                        List<SearchImgBean> searchImgBeans = PictureSearchTool.getInstance().searchFolder(searchFolderBean);
+                        List<SearchImgBean> searchImgBeans = PictureSearchTool.newInstance().searchFolder(searchFolderBean);
                         searchImgBean.addChildImageBeans(searchImgBeans);
                     }
                     fileList.add(0, searchImgBean);
@@ -240,8 +238,10 @@ public class PictureSearchTool {
                 //遍历该文件夹下的所有文件及文件夹
                 for (File childFile : list) {
                     if (childFile.isDirectory()) {
-                        //是文件夹->继续扫描下一级文件夹
-                        search(childFile, deep + 1, onSearchListener);
+                        if (childFile.getName().startsWith(".")) continue;
+                        else
+                            //是文件夹->继续扫描下一级文件夹
+                            search(childFile, deep + 1, onSearchListener);
                     } else if (!jump) {
                         //是文件 并且不跳过
                         String childAbsolutePath = childFile.getAbsolutePath();
@@ -361,6 +361,10 @@ public class PictureSearchTool {
 
     public boolean getContainsGif() {
         return containsGif;
+    }
+
+    public void release() {
+        onSearchListener = null;
     }
 
 

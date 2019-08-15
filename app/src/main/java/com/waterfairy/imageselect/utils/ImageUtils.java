@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.waterfairy.imageselect.options.CompressOptions;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -102,7 +101,6 @@ public class ImageUtils {
      * @return
      */
     public static boolean saveBitmap(String imgPath, Bitmap source, Bitmap.CompressFormat compressFormat, int quality) {
-
         if (source == null || source.isRecycled()) return false;
         File file = createFile(imgPath);
         boolean canSave = file != null;
@@ -252,31 +250,46 @@ public class ImageUtils {
      * 文件压缩
      *
      * @param imageFile
-     * @param compressOptions
      * @return
      */
-    public static Object compress(File imageFile, CompressOptions compressOptions) {
+    public static Object compress(File imageFile, int maxWidth, int maxHeight, int maxSize) {
         try {
             Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.JPEG;
             if (imageFile.getAbsolutePath().endsWith(".PNG") || imageFile.getAbsolutePath().endsWith(".png")) {
                 compressFormat = Bitmap.CompressFormat.PNG;
             }
             //从文件解码
-            Bitmap bitmap = decodeFromFile(imageFile, compressFormat, compressOptions.getMaxWidth(), compressOptions.getMaxHeight());
-            if (bitmap == null) return null;
-            if (compressFormat == Bitmap.CompressFormat.PNG) {
-                //png压缩尺寸
-                return compressMeasure(bitmap, compressOptions.getMaxWidth(), compressOptions.getMaxHeight(), Bitmap.Config.ARGB_4444);
-            } else {
-                //jpg压缩
-//                Bitmap bitmapTemp = matrix(bitmap, compressOptions, false);
-                Bitmap bitmapTemp = compressMeasure(bitmap, compressOptions.getMaxWidth(), compressOptions.getMaxHeight(), Bitmap.Config.RGB_565);
-                if (bitmapTemp != null) {
-                    return compressQualityOutIS(bitmapTemp, compressOptions.getMaxSize());
-                }
-            }
+            Bitmap bitmap = decodeFromFile(imageFile, compressFormat, maxWidth, maxHeight);
+            return compress(bitmap, maxWidth, maxHeight, maxSize, compressFormat);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * bitmap压缩
+     *
+     * @param bitmap
+     * @param maxWidth
+     * @param maxHeight
+     * @param maxSize
+     * @param compressFormat
+     * @return
+     */
+    public static Object compress(Bitmap bitmap, int maxWidth, int maxHeight, int maxSize, Bitmap.CompressFormat compressFormat) {
+        if (bitmap == null) return null;
+        if (compressFormat == Bitmap.CompressFormat.PNG) {
+            //png压缩尺寸
+            return compressMeasurement(bitmap, maxWidth, maxHeight, Bitmap.Config.ARGB_4444);
+        } else {
+            //jpg压缩尺寸
+//                Bitmap bitmapTemp = matrix(bitmap, compressOptions, false);
+            Bitmap bitmapTemp = compressMeasurement(bitmap, maxWidth, maxHeight, Bitmap.Config.RGB_565);
+            if (bitmapTemp != null) {
+                //jpg压缩质量
+                return compressQualityOutIS(bitmapTemp, maxSize);
+            }
         }
         return null;
     }
@@ -287,7 +300,7 @@ public class ImageUtils {
      * @param bitmap
      * @return
      */
-    private static Bitmap compressMeasure(Bitmap bitmap, int maxWidth, int maxHeight, Bitmap.Config config) {
+    private static Bitmap compressMeasurement(Bitmap bitmap, int maxWidth, int maxHeight, Bitmap.Config config) {
         //200 80
         //200 90     100 45
         int width = bitmap.getWidth();
@@ -355,13 +368,13 @@ public class ImageUtils {
     /**
      * 质量压缩方法
      *
-     * @param image
+     * @param bitmap
      * @param maxSize KB
      * @return
      */
-    public static ByteArrayInputStream compressQualityOutIS(Bitmap image, int maxSize) {
+    public static ByteArrayInputStream compressQualityOutIS(Bitmap bitmap, int maxSize) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 86, baos);// 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 86, baos);// 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
         Log.i(TAG, "compress quality: " + 86 + ";size: " + baos.toByteArray().length);
 
         if (maxSize > 0) {
@@ -371,18 +384,18 @@ public class ImageUtils {
                 options -= 8;// 每次都减少5
                 Log.i(TAG, "compress quality: " + options + ";size: " + length);
                 baos.reset(); // 重置baos即清空baos
-                image.compress(Bitmap.CompressFormat.JPEG, options, baos);// 这里压缩options%，把压缩后的数据存放到baos中
+                bitmap.compress(Bitmap.CompressFormat.JPEG, options, baos);// 这里压缩options%，把压缩后的数据存放到baos中
             }
         }
-        image.recycle();
-        image = null;
+        bitmap.recycle();
+        bitmap = null;
         return new ByteArrayInputStream(baos.toByteArray());// 把压缩后的数据baos存放到ByteArrayInputStream中
     }
 
 
-    public static void saveBitmap(Bitmap cropBitmap, Bitmap.CompressFormat format, File savePath) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(savePath);
-        cropBitmap.compress(format, 100, fileOutputStream);
-        fileOutputStream.close();
-    }
+//    public static void saveBitmap(Bitmap cropBitmap, Bitmap.CompressFormat format, File savePath) throws IOException {
+//        FileOutputStream fileOutputStream = new FileOutputStream(savePath);
+//        cropBitmap.compress(format, 100, fileOutputStream);
+//        fileOutputStream.close();
+//    }
 }
