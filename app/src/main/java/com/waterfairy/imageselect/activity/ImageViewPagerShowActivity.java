@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.waterfairy.imageselect.R;
 import com.waterfairy.imageselect.adapter.ViewPageShowAdapter;
 import com.waterfairy.imageselect.options.ShowImgOptions;
@@ -146,27 +147,30 @@ public class ImageViewPagerShowActivity extends RootActivity implements View.OnC
     private void saveImg() {
         if (mSaveImageView != null && !TextUtils.isEmpty(mSavePath)) {
             Drawable drawable = mSaveImageView.getDrawable();
+            Bitmap bitmap = null;
             if (drawable instanceof BitmapDrawable) {
-                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-                if (bitmap != null && !bitmap.isRecycled()) {
-                    //保存
-                    String absolutePath = new File(options.getSaveParentPath(), new File(mSavePath).getName()).getAbsolutePath();
-                    //判断格式
-                    if (!TextUtils.isEmpty(absolutePath)) {
-                        String format = ".jpg";
-                        Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.JPEG;
-                        if (absolutePath.length() >= 4) {
-                            String substring = absolutePath.substring(absolutePath.length() - 4, absolutePath.length());
-                            if (substring.equals(".png") || substring.equals(".PNG")) {
-                                format = ".png";
-                                compressFormat = Bitmap.CompressFormat.PNG;
-                            }
+                bitmap = ((BitmapDrawable) drawable).getBitmap();
+            } else if (drawable instanceof GlideBitmapDrawable) {
+                bitmap = ((GlideBitmapDrawable) drawable).getBitmap();
+            }
+            if (bitmap != null && !bitmap.isRecycled()) {
+                //保存
+                String absolutePath = new File(options.getSaveParentPath(), new File(mSavePath).getName()).getAbsolutePath();
+                //判断格式
+                if (!TextUtils.isEmpty(absolutePath)) {
+                    String format = ".jpg";
+                    Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.JPEG;
+                    if (absolutePath.length() >= 4) {
+                        String substring = absolutePath.substring(absolutePath.length() - 4, absolutePath.length());
+                        if (substring.equals(".png") || substring.equals(".PNG")) {
+                            format = ".png";
+                            compressFormat = Bitmap.CompressFormat.PNG;
                         }
-                        String savePath = new File(options.getSaveParentPath(), MD5Utils.getMD5Code(absolutePath) + format).getAbsolutePath();
-                        boolean b = ImageUtils.saveBitmap(savePath, bitmap, compressFormat, 90);
-                        Toast.makeText(this, b ? "已保存到" + savePath : "保存失败!", Toast.LENGTH_SHORT).show();
-                        return;
                     }
+                    String savePath = new File(options.getSaveParentPath(), MD5Utils.getMD5Code(absolutePath) + format).getAbsolutePath();
+                    boolean b = ImageUtils.saveBitmap(savePath, bitmap, compressFormat, 90);
+                    Toast.makeText(this, b ? "已保存到" + savePath : "保存失败!", Toast.LENGTH_SHORT).show();
+                    return;
                 }
             }
         }
