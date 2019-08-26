@@ -257,6 +257,7 @@ public class ImageSelectActivity extends BaseActivity implements SelectView,
         Intent intent = new Intent(this, ImageViewPagerPreviewActivity.class);
         intent.putStringArrayListExtra("dataList", selectList);
         intent.putExtra(ConstantUtils.MAX_NUM, options.getMaxNum());
+        intent.putExtra(ConstantUtils.TRANSITION_RES, options.getTransitionAnimRes());
         startActivityForResult(intent, 1);
     }
 
