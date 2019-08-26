@@ -60,15 +60,15 @@ public class TestActivity extends AppCompatActivity implements AdapterView.OnIte
         gridView = findViewById(R.id.grid_view);
         gridView.setNumColumns(3);
         gridView.setOnItemClickListener(this);
-        ActivityCompat.setExitSharedElementCallback(this, new SharedElementCallback() {
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                super.onMapSharedElements(names, sharedElements);
-                if (currentView == null) return;
-                sharedElements.put(names.get(0), currentView);
-                currentView = null;
-            }
-        });
+//        ActivityCompat.setExitSharedElementCallback(this, new SharedElementCallback() {
+//            @Override
+//            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+//                super.onMapSharedElements(names, sharedElements);
+//                if (currentView == null) return;
+//                sharedElements.put(names.get(0), currentView);
+//                currentView = null;
+//            }
+//        });
     }
 
 
