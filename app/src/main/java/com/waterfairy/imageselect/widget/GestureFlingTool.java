@@ -13,7 +13,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
  */
 public class GestureFlingTool {
 
-    private static final String TAG = "GestureFlingTool";
 
     private OnFlingListener onFlingListener;
 
@@ -21,15 +20,6 @@ public class GestureFlingTool {
 
     public void setOnFlingListener(OnFlingListener onFlingListener) {
         this.onFlingListener = onFlingListener;
-    }
-
-    public void stop() {
-        if (valueAnimator != null) {
-            valueAnimator.work = false;
-            valueAnimator.setOnFlingListener(null);
-            valueAnimator.cancel();
-            valueAnimator = null;
-        }
     }
 
     /**
@@ -45,6 +35,17 @@ public class GestureFlingTool {
         valueAnimator.start();
     }
 
+
+    public void stop() {
+        if (valueAnimator != null) {
+            valueAnimator.work = false;
+            valueAnimator.setOnFlingListener(null);
+            valueAnimator.cancel();
+            valueAnimator = null;
+        }
+    }
+
+
     public static class MyValueAnimator extends ValueAnimator {
         public boolean work;//是否在工作
 
@@ -54,18 +55,17 @@ public class GestureFlingTool {
         private final float velocityY;
 
         final float endEventX;//飞滚起点x
-        final float endEventY;
+        final float endEventY;//飞滚起点y
 
         private OnFlingListener onFlingListener;
         private long currentTime;
 
-        public MyValueAnimator setOnFlingListener(OnFlingListener onFlingListener) {
+        MyValueAnimator setOnFlingListener(OnFlingListener onFlingListener) {
             this.onFlingListener = onFlingListener;
             return this;
         }
 
-        public MyValueAnimator(MotionEvent startEvent, MotionEvent endEvent, float velocityX, float velocityY) {
-
+        MyValueAnimator(MotionEvent startEvent, MotionEvent endEvent, float velocityX, float velocityY) {
 
             this.startEvent = startEvent;
             this.endEvent = endEvent;
